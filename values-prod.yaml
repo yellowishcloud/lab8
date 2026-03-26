@@ -1,0 +1,65 @@
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: "1.25.1-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+config:
+  appName: my-app-prod
+  environment: prod
+
+secret:
+  username: prodadmin
+  password: prodpass
+
+ingress:
+  enabled: true
+  className: nginx
+  host: my-app.example.com
+  path: /
+  pathType: Prefix
+
+networkPolicy:
+  enabled: true
+
+rbac:
+  enabled: true
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+
+
+postgresql:
+  enabled: true
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0-debian-12-r4
+  auth:
+    username: prodlabuser
+    password: prodlabpass
+    database: prodlabdb
+
+redis:
+  enabled: true
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: 8.2.1-debian-12-r0
